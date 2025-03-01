@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CursorX</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23FFD700'/%3E%3Cstop offset='100%25' style='stop-color:%23DAA520'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='50' fill='url(%23grad)'/%3E%3C/svg%3E">
+    <link href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Serif SC', serif;
+        }
+        .gradient-circle {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #FFD700 0%, #DAA520 100%);
+            border-radius: 50%;
+            margin-bottom: 1.75rem;
+        }
+        .download-btn {
+            color: #8B4513;
+            padding: 12px 48px;
+            transition: all 0.3s ease;
+            border: 2px solid #8B4513;
+            background-color: transparent;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-top: 2.5rem;
+        }
+        .download-btn:hover {
+            background-color: rgba(139, 69, 19, 0.05);
+        }
+        body {
+            background-color: #FFFAF0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            padding-top: 0;
+        }
+        .version {
+            font-style: italic;
+            font-size: 0.875rem;
+            color: #8B4513;
+            margin-top: 1rem;
+            font-weight: 400;
+        }
+        .slogan {
+            color: #8B4513;
+            font-size: 1rem;
+            margin-top: 2rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .explain-link {
+            color: #B8860B;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+            text-decoration-color: #B8860B;
+            text-underline-offset: 4px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .explain-link:hover {
+            color: #8B4513;
+            text-decoration-color: #8B4513;
+        }
+        .sub-slogan {
+            color: #B8860B;
+            font-size: 0.85rem;
+            font-weight: 400;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .title {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #8B4513;
+            margin-bottom: 0;
+            letter-spacing: 0.5px;
+            transform: scaleY(1.2);
+            padding: 0.5rem 0;
+            position: relative;
+            display: inline-block;
+        }
+        .title-pro {
+            position: absolute;
+            top: 0.5rem;
+            right: -2rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #DAA520;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            transform: scaleY(0.9);
+        }
+        .donate-link {
+            color: #8B4513;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+            text-decoration-color: #8B4513;
+            text-underline-offset: 4px;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem;
+        }
+        .donate-link:hover {
+            color: #DAA520;
+            text-decoration-color: #DAA520;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        .modal-content {
+            position: relative;
+            background-color: #FFFAF0;
+            margin: 5vh auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(139, 69, 19, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-scroll {
+            flex: 1;
+            overflow-y: auto;
+            margin: 1.5rem 0 0 0;
+            padding-right: 1rem;
+            line-height: 1.8;
+            max-height: calc(90vh - 180px);
+        }
+        .modal-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .modal-scroll::-webkit-scrollbar-track {
+            background: #FFF8DC;
+        }
+        .modal-scroll::-webkit-scrollbar-thumb {
+            background: #DAA520;
+            border-radius: 2px;
+        }
+        .modal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #B8860B;
+        }
+        .modal-footer {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            padding-left: 0;
+            margin-top: 1rem;
+            border-top: 1px solid #FFE4B5;
+            gap: 1rem;
+        }
+        .download-btn-modal {
+            opacity: 0.5;
+            cursor: not-allowed;
+            padding: 10px 36px;
+            background-color: #FFFAF0;
+            border: 2px solid #8B4513;
+            color: #8B4513;
+            transition: all 0.3s ease;
+        }
+        .download-btn-modal.active {
+            opacity: 1;
+            cursor: pointer;
+        }
+        .download-btn-modal.active:hover {
+            background-color: rgba(139, 69, 19, 0.05);
+        }
+        .save-link {
+            color: #B8860B;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+            text-decoration-color: #B8860B;
+            text-underline-offset: 4px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .save-link:hover {
+            color: #8B4513;
+            text-decoration-color: #8B4513;
+        }
+        .announcement-link {
+            color: #B8860B;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+            text-decoration-color: #B8860B;
+            text-underline-offset: 4px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .announcement-link:hover {
+            color: #8B4513;
+            text-decoration-color: #8B4513;
+        }
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .auth-content {
+            background-color: #FFFAF0;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(139, 69, 19, 0.1);
+            text-align: center;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+        .auth-message {
+            position: relative;
+            margin-top: 1.5rem;
+            color: #8B4513;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            min-height: 1.5rem;
+        }
+        .auth-message.show {
+            opacity: 1;
+        }
+        .auth-message.error {
+            color: #D2691E;
+        }
+        .auth-input-container {
+            position: relative;
+            margin-top: 1.5rem;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+        .auth-input {
+            width: 100%;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 2px solid #8B4513;
+            background-color: transparent;
+            color: #8B4513;
+            outline: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+        .auth-input::placeholder {
+            color: rgba(139, 69, 19, 0.5);
+        }
+        .auth-input:focus {
+            border-bottom-color: #DAA520;
+        }
+        .auth-confirm-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            margin-left: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .auth-confirm-btn:hover {
+            transform: scale(1.1);
+        }
+        .auth-confirm-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #8B4513;
+            stroke-width: 2;
+            transition: all 0.3s ease;
+        }
+        .auth-confirm-btn:hover svg {
+            stroke: #DAA520;
+        }
+    </style>
+</head>
+<body>
+    <div class="container flex flex-col items-center justify-center min-h-screen">
+        <div class="gradient-circle"></div>
+        <h1 class="title">CursorX<span class="title-pro">Pro</span></h1>
+        <button class="download-btn" onclick="showModal()">会员下载</button>
+        <div class="version">v 3.0.5</div>
+        <div class="slogan">
+            让您的 Cursor 拥有更快捷、更智能的编程体验
+        </div>
+        <div class="sub-slogan">
+            * 诚挚感谢所有对项目做出贡献的人
+            <a href="donate.html" class="announcement-link" target="_blank">如何成为 CursorX 会员</a>
+        </div>
+    </div>
+
+    <div class="auth-modal" id="authModal" style="display: none;">
+        <div class="auth-content">
+            <h2 class="text-xl font-bold mb-4">身份验证</h2>
+            <div class="auth-input-container">
+                <input type="text" class="auth-input" placeholder="请输入验证码" id="authInput">
+                <button class="auth-confirm-btn" onclick="verifyAuth()" id="authConfirmBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 6L9 17L4 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="auth-message" id="authMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        function showModal() {
+            document.getElementById('authModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        async function verifyAuth() {
+            const authInput = document.getElementById('authInput');
+            const authMessage = document.getElementById('authMessage');
+            const authConfirmBtn = document.getElementById('authConfirmBtn');
+            const code = authInput.value.trim();
+            
+            if (!code) return;
+
+            // 禁用输入和按钮
+            authInput.disabled = true;
+            authConfirmBtn.style.opacity = '0.5';
+            authConfirmBtn.style.cursor = 'not-allowed';
+            
+            // 显示加载消息
+            authMessage.textContent = '验证中...';
+            authMessage.classList.remove('error');
+            authMessage.classList.add('show');
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+                const response = await fetch(`https://v50tome.cn/verify/?code=${encodeURIComponent(code)}`, {
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error('请求失败');
+                }
+
+                const data = await response.json();
+                
+                if (data.permissions) {
+                    // 权限验证通过
+                    window.location.href = data.url;
+                    document.getElementById('authModal').style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                } else {
+                    // 权限验证失败
+                    authMessage.textContent = '您没有权限下载此应用，请联系开发者团队';
+                    authMessage.classList.add('error');
+                }
+            } catch (error) {
+                // 处理错误
+                if (error.name === 'AbortError') {
+                    authMessage.textContent = '请求超时，请检查网络';
+                } else {
+                    authMessage.textContent = '验证失败，请稍后重试';
+                }
+                authMessage.classList.add('error');
+            } finally {
+                // 恢复输入和按钮状态
+                authInput.disabled = false;
+                authConfirmBtn.style.opacity = '1';
+                authConfirmBtn.style.cursor = 'pointer';
+            }
+        }
+
+        window.onclick = (event) => {
+            if (event.target == document.getElementById('authModal')) {
+                document.getElementById('authModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        };
+    </script>
+</body>
+</html> 
